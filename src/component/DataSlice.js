@@ -3,24 +3,39 @@ import { createSlice } from "@reduxjs/toolkit";
 const data = createSlice({
     name : 'Data',
     initialState:{
-        Popular : [],
-        TrendingMov : [],
-        Show:[]
+        Movies : [],
+        Shows : [],
+        TrendingMovies:[],
+        TrendingShows:[],
+        HighRated:[],
+        MostWatch:[],
+      
+
     },
     reducers :{
-        PopularMovies : (state , action)=>{
-              state.Popular.push(action.payload)
+        AddMovies : (state , action)=>{
+              state.Movies.push(action.payload)
         },
-        TrendMovies : (state , action)=>{
-            state.TrendingMov.push(action.payload)
+        AddShows : (state , action)=>{
+            state.Shows.push(action.payload)
       },
-      Shows : (state , action)=>{
-        state.Show.push(action.payload)
+       AddTrendingMovies : (state , action)=>{
+        state.TrendingMovies.push(action.payload)
   },
+  AddTrendingShows : (state , action)=>{
+    state.TrendingShows.push(action.payload)
+},
+  AddHighRated : (state , action)=>{
+    state.HighRated.push(action.payload)
+},
+AddMostWatched : (state , action)=>{
+    state.MostWatch.push(action.payload)
+},
+
 
 
     }
 })
 
-export const {PopularMovies , TrendMovies , Show} = data.actions;
+export const {AddMovies , AddShows , AddTrendingMovies,AddHighRated,AddMostWatched, AddTrendingShows} = data.actions;
 export default data.reducer;

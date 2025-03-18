@@ -44,11 +44,13 @@ const Caros = ({ data }) => {
 
   return (
     <>
-    { data.length != 0 ? data.map((movie) => {
+    { data[0]?.ids === 0 ? shimmerArray.map((item)=>{
+    return <Shimmer/>
+  }) : data?.map((movie) => {
     return (
       <div className="tw-flex tw-justify-center tw-items-center tw-bg-black tw-p-8 tw-cursor-pointer" key={movie?.ids?.tmdb} 
       >
-        <div className="tw-w-64 tw-rounded-md tw-overflow-hidden tw-shadow-xl tw-bg-black tw-bg-gray-900">
+        <div className="md:tw-w-64    tw-rounded-md tw-overflow-hidden tw-shadow-xl tw-bg-black tw-bg-gray-900">
           {/* Card Image */}
           <div className="tw-relative" onClick={()=>clickHandler(movie?.ids?.trakt,movie?.media_type)} >
                 <img src={movie?.images?.poster || "https://dummyimage.com/300x450/111/ff0000&text=No+Poster+Available"} alt={movie.title} className="tw-w-full tw-h-56 tw-object-cover" />
@@ -60,18 +62,18 @@ const Caros = ({ data }) => {
           <div className="tw-bg-gray-900 tw-text-white tw-p-3">
             {/* Title */}
             <div className=" tw-flex tw-justify-between tw-items-center tw-mb-1">
-              <h3 className="tw-font-bold tw-text-lg tw-mb-1">{movie.title}</h3>{" "}
+              <h3 className="tw-font-bold tw-text-lg tw-mb-1">{movie?.title}</h3>{" "}
               <div className="tw-text-sm tw-font-bold tw-text-green-500">
-                {movie.rating.toFixed(2)}
+                {movie?.rating?.toFixed(2)}
               </div>
             </div>
 
             {/* Date and Runtime */}
             <div className="tw-flex tw-justify-between tw-text-xs tw-text-gray-400 tw-mb-1">
-            <div className="tw-flex tw-text-xs tw-text-gray-400">      <span>{movie.year}</span>
+            <div className="tw-flex tw-text-xs tw-text-gray-400">      <span>{movie?.year}</span>
               <span className="tw-mx-2">•</span>
-              <span>{`${parseInt(movie.runtime / 60)} h ${
-                movie.runtime % 60
+              <span>{`${parseInt(movie?.runtime / 60)} h ${
+                movie?.runtime % 60
               } min`}</span> </div>
         
               <button 
@@ -91,7 +93,7 @@ const Caros = ({ data }) => {
             </div>
             {/* Overview */}
             <div className="tw-mt-2 tw-text-xs tw-text-gray-300 tw-line-clamp-3">
-              {movie.overview}
+              {movie?.overview}
             </div>
           </div>
         </div>
@@ -99,9 +101,7 @@ const Caros = ({ data }) => {
 
     
     );
-  }) :shimmerArray.map((item)=>{
-    return <Shimmer/>
-  })} 
+  }) }
   
   </>
 )

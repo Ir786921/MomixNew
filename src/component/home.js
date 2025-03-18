@@ -9,6 +9,9 @@ import React, { useEffect, useState } from "react";
 import MovieCarousel from "./MovieCarousel";
 
 import Faq from "./Accordians";
+import { useDispatch, useSelector } from "react-redux";
+import { AddHighRated, AddMostWatched, AddMovies, AddShows, AddTrendingMovies, AddTrendingShows } from "./DataSlice";
+import Store from "./store";
 
 const Section = ({ question, answer, isvisible, setIsvisible }) => {
   return (
@@ -47,30 +50,47 @@ const Home = () => {
     Q2: false,
     Q3: false,
   });
-  const [trendmovies, setTrendmovies] = useState([]);
-  const [popularMovie, setPopularMovie] = useState([]);
-  const [popularShow, setPopularShow] = useState([]);
-  const [mostWatched, setMostWatched] = useState([]);
-  const [mostRated, setMostRated] = useState([]);
+ 
+  
+ 
+ const [rated,setRated] = useState([])
+
+  const dispatch = useDispatch()
+
+  const popularMovie = useSelector(Store => Store.Data.Movies)
+  const popularShow = useSelector(Store => Store.Data.Shows)
+  const MostWatched = useSelector(Store => Store.Data.MostWatch)
+  const mostRated = useSelector(Store => Store.Data.HighRated)
+  const trendmovies = useSelector(Store => Store.Data.TrendingMovies)
+  console.log(mostRated[0]);
+  console.log(MostWatched[0]);
+  
+  
 
   function HighRated() {
-    if (!popularMovie || !popularShow) return; // Prevent errors if data isn't available
+    if (!popularShow && !popularMovie) return; 
+    
+    const topRatedShows = popularShow[0].filter((item)=> {return item?.rating > 8})
+    const topRatedMovies = popularMovie[0].filter((item)=> {return item?.rating > 8})
+
+    const result = [...topRatedShows,...topRatedMovies]
   
-    // Create sorted copies without mutating original arrays
-    const topRatedMovie = popularMovie.filter((item)=> {return item?.rating > 8.5})
-    const topRatedShows = popularShow.filter((item)=> {return item?.rating > 8.5})
+    
+    
+    
   
-    const result = [...topRatedMovie, ...topRatedShows];
-    const mostRated = result.filter((item)=> {return item?.rating > 9})
-    const ActualMostRated = [...mostRated,...topRatedMovie,...topRatedShows]
+    
+ 
+ 
+    dispatch(AddHighRated(result))
     
    
-    setMostRated(ActualMostRated);
+   
   }
 
   async function getMostWatched() {
     const response1 = await fetch(
-      "https://api.trakt.tv/movies/watched/all?limit=25&extended=full",
+      "https://api.trakt.tv/movies/watched/all?limit=50&extended=full",
       {
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +101,7 @@ const Home = () => {
     );
 
     const response2 = await fetch(
-      "https://api.trakt.tv/shows/watched/all?limit=25&extended=full",
+      "https://api.trakt.tv/shows/watched/all?limit=50&extended=full",
       {
         headers: {
           "Content-Type": "application/json",
@@ -152,10 +172,12 @@ const Home = () => {
         return { ...movie, images };
       })
     );
-    setMostWatched(fullMovies);
-
-    console.log(fullMovies);
+  
+    dispatch(AddMostWatched(fullMovies))
+  
   }
+
+
 
   async function getPopularShow() {
     const response = await fetch(
@@ -213,9 +235,12 @@ const Home = () => {
     const updated1 = fullMovies.map((item) => {
       return Object.assign(item, { media_type: "shows" });
     });
-    setPopularShow(updated1);
+    const sortedShow = updated1.sort((a, b) => b.rating - a.rating);
+    setRated(prev => [...prev , sortedShow])
+    dispatch(AddShows(updated1))
+    
 
-    console.log(updated1);
+ 
   }
 
   async function getPopularMovies() {
@@ -294,8 +319,11 @@ const Home = () => {
     const updated = fullMovies.map((item) => {
       return Object.assign(item, { media_type: "movies" });
     });
-    setPopularMovie(updated);
 
+    const sortedMovies = updated.sort((a, b) => b.rating - a.rating);
+    setRated(prev => [...prev , sortedMovies]);
+    dispatch(AddMovies(updated))
+   
     console.log(fullMovies);
   }
 
@@ -371,15 +399,99 @@ const Home = () => {
     const updated = fullMovies.map((item) => {
       return Object.assign(item, { media_type: "movies" });
     });
-    setTrendmovies(updated);
+    dispatch(AddTrendingMovies(updated))
+  
   }
+    async function getTrendingShows() {
+      const response = await fetch(
+        "https://api.trakt.tv/shows/trending?limit=50",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "trakt-api-version": "2",
+            "trakt-api-key":process.env.TRAKT_API_KEY
+             
+          },
+        }
+      );
+  
+      const shows = await response.json();
+      console.log(shows);
+  
+      return shows.map((show) => show.show);
+    }
+  
+    
+    async function getShowsFullDetails(traktId) {
+      const response = await fetch(
+        `https://api.trakt.tv/shows/${traktId}?extended=full`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "trakt-api-version": "2",
+            "trakt-api-key":process.env.TRAKT_API_KEY
+             
+          },
+        }
+      );
+  
+      return response.json();
+    }
+  
+    
+    async function getShowsPosters(tmdbId) {
+      if (!tmdbId) return null;
+  
+      const response = await fetch(
+        `https://www.omdbapi.com/?i=${tmdbId}&apikey=${process.env.PARCEL_PUBLIC_OMDB_API_KEY}`
+      );
+  
+      if (!response.ok) return null; 
+  
+      const images = await response.json();
+      
+      
+  
+      return {
+        poster: images.Poster || null,
+        background: images.moviebackground?.[0]?.url || null,
+        logo: images.hdmovielogo?.[0]?.url || null,
+      };
+    }
+  
+   
+    async function fetchCompleteShowsDetails() {
+      const trendingMovies = await getTrendingShows();
+  
+      const fullMovies = await Promise.all(
+        trendingMovies.map(async (movie) => {
+          const details = await getShowsFullDetails(movie.ids.trakt);
+          const imdbId = details.ids.imdb; // ✅ Get TMDB ID directly from Trakt
+  
+          // Fetch images if TMDB ID is available
+          const images = imdbId ? await getShowsPosters(imdbId) : null;
+  
+          return { ...details, images };
+        })
+      );
+      const updated = fullMovies.map((item) => {
+        return Object.assign(item, { media_type: "shows" });
+      });
+      dispatch(AddTrendingShows(updated))
+     
+  
+    
+    }
   useEffect(() => {
     fetchCompleteMovieDetails();
     fetchCompletePopularMovieDetails();
     fetchCompletePopularShows();
     fetchCompleteMostWatched();
+    fetchCompleteShowsDetails()
+   
     
-      HighRated();
+
+
     
   }, []);
 
@@ -421,26 +533,26 @@ const Home = () => {
         <div>
           <MovieCarousel
             Section={"Trending Now 🔥"}
-            trendmovies={trendmovies}
+            trendmovies={trendmovies[0]}
           />
         </div>
         <div>
-          <MovieCarousel Section={"Most Rated ⭐"} trendmovies={mostRated} />
+          <MovieCarousel Section={"Most Rated ⭐"} trendmovies={rated[0]} />
         </div>
 
         <div>
           <MovieCarousel
             Section={"Popular Movies"}
-            trendmovies={popularMovie}
+            trendmovies={popularMovie[0]}
           />
         </div>
         <div>
-          <MovieCarousel Section={"Popular Shows"} trendmovies={popularShow} />
+          <MovieCarousel Section={"Popular Shows"} trendmovies={popularShow[0]} />
         </div>
         <div>
           <MovieCarousel
             Section={"Most Watched Movie and Show"}
-            trendmovies={mostWatched}
+            trendmovies={MostWatched[0]}
           />
         </div>
 

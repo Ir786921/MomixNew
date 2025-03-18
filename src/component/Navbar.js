@@ -187,7 +187,7 @@ const Navbar = () => {
       </div>
 
       {isProfile && (
-        <div className="tw-backdrop-blur-md md:tw-hidden tw-text-white tw-absolute tw-w-full tw-bg-black tw-border-b tw-border-gray-100 tw-shadow-lg tw-z-100 tw-top-16 ">
+        <div className="tw-backdrop-blur-md md:tw-hidden tw-text-white tw-absolute tw-w-full tw-bg-black tw-border-b tw-border-gray-100 tw-shadow-lg tw-z-50 tw-top-16 ">
           <div className="tw-px-4 tw-pt-2 tw-pb-3 tw-space-y-1">
             <div className="tw-border-b tw-border-gray-100">
               <div className="tw-flex tw-flex-col tw-gap-4 tw-p-2">
@@ -197,7 +197,7 @@ const Navbar = () => {
                       <i className="fas fa-user tw-text-white"></i>
                     </div>
                     <div>
-                      <div className="tw-text-sm tw-font-semibold tw-text-gray-900">
+                      <div className="tw-text-sm tw-font-semibold tw-text-gray-500">
                       {isUser ? User[0]?.displayName : "User Email"}
                       </div>
                       <div className="tw-text-xs tw-text-gray-500">
