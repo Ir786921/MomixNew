@@ -131,7 +131,7 @@ const Signup = () => {
   return (
     <>
     { (isUserLogin && (!UserDetails || UserDetails.length === 0))  && <Loader/> || (isSignUp && (!UserDetails || UserDetails.length === 0))  && <Loader/>}
-   <div className=" tw-flex justify-center border border-success tw-h-screen"
+   <div className=" tw-flex justify-center  tw-h-screen"
    style={{backgroundImage:`url(${image})`}}>
      <div className="tw-m-auto tw-p-4 tw-bg-black tw-opacity-85 tw-rounded-md tw-shadow-md md:tw-w-[30%] tw-w-[70%]">
     <form
