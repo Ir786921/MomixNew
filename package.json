@@ -2,13 +2,14 @@
   "name": "momix",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+
   "source": "src/index.html",
+  "type": "module",
   "scripts": {
     "start": "parcel",
-    "build": "parcel-build"
+    "build": "parcel build"
   },
-  "type": "module",
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
