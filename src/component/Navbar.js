@@ -48,13 +48,19 @@ const Navbar = () => {
   }, [isOpen]);
 
   const handleLogout = async () => {
-    console.log("logout clicked");
-    
+    console.log("Logout clicked");
+  
     try {
-      await signOut(auth);
-      dispatch(isLogin())
-      dispatch(removeUser())
-      console.log("User logged out");
+      await signOut(auth)
+        .then(() => {
+          console.log("User logged out successfully");
+          dispatch(removeUser());
+          dispatch(isLogin());
+          navigate("/"); // Ensure user is redirected after logout
+        })
+        .catch((error) => {
+          console.error("Error signing out:", error.message);
+        });
     } catch (error) {
       console.error("Logout failed:", error.message);
     }
@@ -72,7 +78,10 @@ const Navbar = () => {
         }`}
       >
         <div className="tw-relative  tw-flex tw-justify-center">
-          <h1 className="md:tw-ml-10 tw-text-red-500 tw-text-4xl tw-font-extrabold tw-ext-red-600 tw-tracking-wide tw-italic tw-drop-shadow-lg tw-transform tw-origin-center">
+          <h1 className="tw-cursor-pointer md:tw-ml-10 tw-text-red-500 tw-text-4xl tw-font-extrabold tw-ext-red-600 tw-tracking-wide tw-italic tw-drop-shadow-lg tw-transform tw-origin-center"
+          onClick={()=>{
+            navigate("/browse")
+          }}>
             <span className="tw-inline-block tw-transform tw-rotate-[-10deg]">
               M
             </span>

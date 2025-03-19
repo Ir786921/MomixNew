@@ -85,7 +85,7 @@ const MovieCarousel = ({ trendmovies, Section }) => {
           className="tw-flex tw-overflow-x-hidden tw-scroll-smooth tw-gap-5 tw-py-4 tw-px-12"
           style={{ scrollBehavior: "smooth" }}
         >
-          {trendmovies?.length === 0
+          {(!trendmovies || trendmovies.length === 0)
             ? shimmerArray.map((it) => {
                 return (
                   <div className="tw-cursor-pointer tw-flex-none tw-w-40 tw-rounded-lg tw-overflow-hidden tw-shadow-xl  tw-transform tw-transition-all tw-duration-300 hover:tw-scale-105 hover:tw-shadow-2xl tw-animate-pulse ">

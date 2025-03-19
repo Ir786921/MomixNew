@@ -44,7 +44,7 @@ const Caros = ({ data }) => {
 
   return (
     <>
-    { data[0]?.ids === 0 ? shimmerArray.map((item)=>{
+    { data.length === 0 ? shimmerArray.map((item)=>{
     return <Shimmer/>
   }) : data?.map((movie) => {
     return (

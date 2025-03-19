@@ -10,7 +10,14 @@ import MovieCarousel from "./MovieCarousel";
 
 import Faq from "./Accordians";
 import { useDispatch, useSelector } from "react-redux";
-import { AddHighRated, AddMostWatched, AddMovies, AddShows, AddTrendingMovies, AddTrendingShows } from "./DataSlice";
+import {
+  AddHighRated,
+  AddMostWatched,
+  AddMovies,
+  AddShows,
+  AddTrendingMovies,
+  AddTrendingShows,
+} from "./DataSlice";
 import Store from "./store";
 
 const Section = ({ question, answer, isvisible, setIsvisible }) => {
@@ -44,50 +51,25 @@ const Section = ({ question, answer, isvisible, setIsvisible }) => {
 };
 
 const Home = () => {
-
   const [sectionconfig, setSectionconfig] = useState({
     Q1: false,
     Q2: false,
     Q3: false,
   });
- 
-  
- 
- const [rated,setRated] = useState([])
 
-  const dispatch = useDispatch()
+  const [rated, setRated] = useState([]);
 
-  const popularMovie = useSelector(Store => Store.Data.Movies)
-  const popularShow = useSelector(Store => Store.Data.Shows)
-  const MostWatched = useSelector(Store => Store.Data.MostWatch)
-  const mostRated = useSelector(Store => Store.Data.HighRated)
-  const trendmovies = useSelector(Store => Store.Data.TrendingMovies)
+  const dispatch = useDispatch();
+
+  const popularMovie = useSelector((Store) => Store.Data.Movies);
+  const popularShow = useSelector((Store) => Store.Data.Shows);
+  const MostWatched = useSelector((Store) => Store.Data.MostWatch);
+  const mostRated = useSelector((Store) => Store.Data.HighRated);
+  const trendmovies = useSelector((Store) => Store.Data.TrendingMovies);
   console.log(mostRated[0]);
   console.log(MostWatched[0]);
-  
-  
 
-  function HighRated() {
-    if (!popularShow && !popularMovie) return; 
-    
-    const topRatedShows = popularShow[0].filter((item)=> {return item?.rating > 8})
-    const topRatedMovies = popularMovie[0].filter((item)=> {return item?.rating > 8})
-
-    const result = [...topRatedShows,...topRatedMovies]
-  
-    
-    
-    
-  
-    
- 
- 
-    dispatch(AddHighRated(result))
-    
-   
-   
-  }
-
+  // Fetching Most Wtched Movie and Show
   async function getMostWatched() {
     const response1 = await fetch(
       "https://api.trakt.tv/movies/watched/all?limit=50&extended=full",
@@ -106,8 +88,7 @@ const Home = () => {
         headers: {
           "Content-Type": "application/json",
           "trakt-api-version": "2",
-          "trakt-api-key":process.env.TRAKT_API_KEY
-           
+          "trakt-api-key": process.env.TRAKT_API_KEY,
         },
       }
     );
@@ -138,18 +119,17 @@ const Home = () => {
 
     const result = [...updated1, ...updated2];
 
-    return result; // ✅ Return directly, no need for `.map()`
+    return result;
   }
 
+  //  Fetching most watched movie and shows posters
   async function getMostWatchedPosters(tmdbId) {
-    if (!tmdbId) return null; // Avoid errors if TMDB ID is missing
-
+    if (!tmdbId) return null;
     const response = await fetch(
       `https://www.omdbapi.com/?i=${tmdbId}&apikey=${process.env.PARCEL_PUBLIC_OMDB_API_KEY}`
     );
 
-    if (!response.ok) return null; // Handle errors gracefully
-
+    if (!response.ok) return null;
     const images = await response.json();
 
     return {
@@ -159,12 +139,14 @@ const Home = () => {
     };
   }
 
+  // Adding images to fetched most watched movie and shows
+
   async function fetchCompleteMostWatched() {
     const PopularMovies = await getMostWatched();
 
     const fullMovies = await Promise.all(
       PopularMovies.map(async (movie) => {
-        const imdbId = movie.ids.imdb; // ✅ Get TMDB ID directly from Trakt
+        const imdbId = movie.ids.imdb;
 
         // Fetch images if TMDB ID is available
         const images = imdbId ? await getMostWatchedPosters(imdbId) : null;
@@ -172,12 +154,11 @@ const Home = () => {
         return { ...movie, images };
       })
     );
-  
-    dispatch(AddMostWatched(fullMovies))
-  
+
+    dispatch(AddMostWatched(fullMovies));
   }
 
-
+  // Fetching popular Shows
 
   async function getPopularShow() {
     const response = await fetch(
@@ -186,8 +167,7 @@ const Home = () => {
         headers: {
           "Content-Type": "application/json",
           "trakt-api-version": "2",
-          "trakt-api-key":process.env.TRAKT_API_KEY
-            
+          "trakt-api-key": process.env.TRAKT_API_KEY,
         },
       }
     );
@@ -198,17 +178,19 @@ const Home = () => {
 
     const shows = await response.json();
 
-    return shows; // ✅ Return directly, no need for `.map()`
+    return shows;
   }
 
+  //  Fetching Most Popular Shows Poster
+
   async function getPopularShowPosters(tmdbId) {
-    if (!tmdbId) return null; // Avoid errors if TMDB ID is missing
+    if (!tmdbId) return null;
 
     const response = await fetch(
       `https://www.omdbapi.com/?i=${tmdbId}&apikey=${process.env.PARCEL_PUBLIC_OMDB_API_KEY}`
     );
 
-    if (!response.ok) return null; // Handle errors gracefully
+    if (!response.ok) return null;
 
     const images = await response.json();
 
@@ -219,14 +201,15 @@ const Home = () => {
     };
   }
 
+  // Adding Images to the shows data
+
   async function fetchCompletePopularShows() {
     const PopularMovies = await getPopularShow();
 
     const fullMovies = await Promise.all(
       PopularMovies.map(async (movie) => {
-        const imdbId = movie.ids.imdb; // ✅ Get TMDB ID directly from Trakt
+        const imdbId = movie.ids.imdb;
 
-        // Fetch images if TMDB ID is available
         const images = imdbId ? await getPopularShowPosters(imdbId) : null;
 
         return { ...movie, images };
@@ -236,12 +219,11 @@ const Home = () => {
       return Object.assign(item, { media_type: "shows" });
     });
     const sortedShow = updated1.sort((a, b) => b.rating - a.rating);
-    setRated(prev => [...prev , sortedShow])
-    dispatch(AddShows(updated1))
-    
-
- 
+    setRated((prev) => [...prev, sortedShow]);
+    dispatch(AddShows(updated1));
   }
+
+  // Fetching most popular movies
 
   async function getPopularMovies() {
     const response = await fetch(
@@ -250,8 +232,7 @@ const Home = () => {
         headers: {
           "Content-Type": "application/json",
           "trakt-api-version": "2",
-          "trakt-api-key":process.env.TRAKT_API_KEY
-           
+          "trakt-api-key": process.env.TRAKT_API_KEY,
         },
       }
     );
@@ -261,7 +242,7 @@ const Home = () => {
     }
 
     const movies = await response.json();
-    return movies; // ✅ Return directly, no need for `.map()`
+    return movies;
   }
 
   // Fetch full movie details from Trakt (including TMDB ID)
@@ -272,8 +253,7 @@ const Home = () => {
         headers: {
           "Content-Type": "application/json",
           "trakt-api-version": "2",
-          "trakt-api-key":process.env.TRAKT_API_KEY
-           
+          "trakt-api-key": process.env.TRAKT_API_KEY,
         },
       }
     );
@@ -281,15 +261,16 @@ const Home = () => {
     return response.json();
   }
 
-  // Fetch movie images from Fanart.tv using TMDB ID
+  // Fetch movie images
+
   async function getPopularMoviePosters(tmdbId) {
-    if (!tmdbId) return null; // Avoid errors if TMDB ID is missing
+    if (!tmdbId) return null;
 
     const response = await fetch(
       `https://www.omdbapi.com/?i=${tmdbId}&apikey=${process.env.PARCEL_PUBLIC_OMDB_API_KEY}`
     );
 
-    if (!response.ok) return null; // Handle errors gracefully
+    if (!response.ok) return null;
 
     const images = await response.json();
 
@@ -307,9 +288,8 @@ const Home = () => {
     const fullMovies = await Promise.all(
       PopularMovies.map(async (movie) => {
         const details = await getPopularMovieFullDetails(movie?.ids?.trakt);
-        const imdbId = details.ids.imdb; // ✅ Get TMDB ID directly from Trakt
+        const imdbId = details.ids.imdb;
 
-        // Fetch images if TMDB ID is available
         const images = imdbId ? await getPopularMoviePosters(imdbId) : null;
 
         return { ...details, images };
@@ -321,11 +301,13 @@ const Home = () => {
     });
 
     const sortedMovies = updated.sort((a, b) => b.rating - a.rating);
-    setRated(prev => [...prev , sortedMovies]);
-    dispatch(AddMovies(updated))
-   
+    setRated((prev) => [...prev, sortedMovies]);
+    dispatch(AddMovies(updated));
+
     console.log(fullMovies);
   }
+
+  // Fetching Trending Movies
 
   async function getTrendingMovies() {
     const response = await fetch(
@@ -344,7 +326,7 @@ const Home = () => {
     return movies.map((movie) => movie.movie);
   }
 
-  // Fetch full movie details from Trakt (including TMDB ID)
+  // Fetch full movie details from Trakt
   async function getMovieFullDetails(traktId) {
     const response = await fetch(
       `https://api.trakt.tv/movies/${traktId}?extended=full`,
@@ -352,8 +334,7 @@ const Home = () => {
         headers: {
           "Content-Type": "application/json",
           "trakt-api-version": "2",
-          "trakt-api-key":process.env.TRAKT_API_KEY
-           
+          "trakt-api-key": process.env.TRAKT_API_KEY,
         },
       }
     );
@@ -363,13 +344,13 @@ const Home = () => {
 
   // Fetch movie images from Fanart.tv using TMDB ID
   async function getMoviePosters(tmdbId) {
-    if (!tmdbId) return null; // Avoid errors if TMDB ID is missing
+    if (!tmdbId) return null;
 
     const response = await fetch(
       `https://www.omdbapi.com/?i=${tmdbId}&apikey=${process.env.PARCEL_PUBLIC_OMDB_API_KEY}`
     );
 
-    if (!response.ok) return null; // Handle errors gracefully
+    if (!response.ok) return null;
 
     const images = await response.json();
 
@@ -387,9 +368,8 @@ const Home = () => {
     const fullMovies = await Promise.all(
       trendingMovies.map(async (movie) => {
         const details = await getMovieFullDetails(movie?.ids?.trakt);
-        const imdbId = details.ids.imdb; // ✅ Get TMDB ID directly from Trakt
+        const imdbId = details.ids.imdb;
 
-        // Fetch images if TMDB ID is available
         const images = imdbId ? await getMoviePosters(imdbId) : null;
 
         return { ...details, images };
@@ -399,100 +379,93 @@ const Home = () => {
     const updated = fullMovies.map((item) => {
       return Object.assign(item, { media_type: "movies" });
     });
-    dispatch(AddTrendingMovies(updated))
-  
+    dispatch(AddTrendingMovies(updated));
   }
-    async function getTrendingShows() {
-      const response = await fetch(
-        "https://api.trakt.tv/shows/trending?limit=50",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "trakt-api-version": "2",
-            "trakt-api-key":process.env.TRAKT_API_KEY
-             
-          },
-        }
-      );
-  
-      const shows = await response.json();
-      console.log(shows);
-  
-      return shows.map((show) => show.show);
-    }
-  
-    
-    async function getShowsFullDetails(traktId) {
-      const response = await fetch(
-        `https://api.trakt.tv/shows/${traktId}?extended=full`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "trakt-api-version": "2",
-            "trakt-api-key":process.env.TRAKT_API_KEY
-             
-          },
-        }
-      );
-  
-      return response.json();
-    }
-  
-    
-    async function getShowsPosters(tmdbId) {
-      if (!tmdbId) return null;
-  
-      const response = await fetch(
-        `https://www.omdbapi.com/?i=${tmdbId}&apikey=${process.env.PARCEL_PUBLIC_OMDB_API_KEY}`
-      );
-  
-      if (!response.ok) return null; 
-  
-      const images = await response.json();
-      
-      
-  
-      return {
-        poster: images.Poster || null,
-        background: images.moviebackground?.[0]?.url || null,
-        logo: images.hdmovielogo?.[0]?.url || null,
-      };
-    }
-  
-   
-    async function fetchCompleteShowsDetails() {
-      const trendingMovies = await getTrendingShows();
-  
-      const fullMovies = await Promise.all(
-        trendingMovies.map(async (movie) => {
-          const details = await getShowsFullDetails(movie.ids.trakt);
-          const imdbId = details.ids.imdb; // ✅ Get TMDB ID directly from Trakt
-  
-          // Fetch images if TMDB ID is available
-          const images = imdbId ? await getShowsPosters(imdbId) : null;
-  
-          return { ...details, images };
-        })
-      );
-      const updated = fullMovies.map((item) => {
-        return Object.assign(item, { media_type: "shows" });
-      });
-      dispatch(AddTrendingShows(updated))
-     
-  
-    
-    }
+
+  // Fetching Trending Shows
+
+  async function getTrendingShows() {
+    const response = await fetch(
+      "https://api.trakt.tv/shows/trending?limit=50",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "trakt-api-version": "2",
+          "trakt-api-key": process.env.TRAKT_API_KEY,
+        },
+      }
+    );
+
+    const shows = await response.json();
+    console.log(shows);
+
+    return shows.map((show) => show.show);
+  }
+
+  // Fetching Full details of trending shows
+
+  async function getShowsFullDetails(traktId) {
+    const response = await fetch(
+      `https://api.trakt.tv/shows/${traktId}?extended=full`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "trakt-api-version": "2",
+          "trakt-api-key": process.env.TRAKT_API_KEY,
+        },
+      }
+    );
+
+    return response.json();
+  }
+
+  // Fetching poster of trending shows
+
+  async function getShowsPosters(tmdbId) {
+    if (!tmdbId) return null;
+
+    const response = await fetch(
+      `https://www.omdbapi.com/?i=${tmdbId}&apikey=${process.env.PARCEL_PUBLIC_OMDB_API_KEY}`
+    );
+
+    if (!response.ok) return null;
+
+    const images = await response.json();
+
+    return {
+      poster: images.Poster || null,
+      background: images.moviebackground?.[0]?.url || null,
+      logo: images.hdmovielogo?.[0]?.url || null,
+    };
+  }
+
+  // Fetching complete details of trending shows
+
+  async function fetchCompleteShowsDetails() {
+    const trendingMovies = await getTrendingShows();
+
+    const fullMovies = await Promise.all(
+      trendingMovies.map(async (movie) => {
+        const details = await getShowsFullDetails(movie.ids.trakt);
+        const imdbId = details.ids.imdb;
+
+        const images = imdbId ? await getShowsPosters(imdbId) : null;
+
+        return { ...details, images };
+      })
+    );
+    const updated = fullMovies.map((item) => {
+      return Object.assign(item, { media_type: "shows" });
+    });
+    dispatch(AddTrendingShows(updated));
+  }
+
   useEffect(() => {
     fetchCompleteMovieDetails();
     fetchCompletePopularMovieDetails();
     fetchCompletePopularShows();
     fetchCompleteMostWatched();
-    fetchCompleteShowsDetails()
-   
-    
-
-
-    
+    fetchCompleteShowsDetails();
   }, []);
 
   return (
@@ -505,12 +478,10 @@ const Home = () => {
           backgroundSize: "cover",
         }}
       >
-       <Navbar/>
+        <Navbar />
 
-        {/* Black Overlay */}
         <div className="tw-absolute tw-inset-0 tw-bg-black tw-bg-opacity-60"></div>
 
-        {/* Content Layer */}
         <div className=" tw-flex tw-justify-center  tw-w-full  tw-p-6">
           <div className="tw-relative tw-mt-40  tw-z-10">
             <h1 className="tw-text-5xl tw-font-bold tw-text-center">
@@ -524,7 +495,6 @@ const Home = () => {
             </p>
             <div className="">
               <SearchBar />
-              {/* <button className=" tw-px-8 tw-bg-red-600 border-0 tw-m-auto tw-text-white tw-py-2 tw-rounded-md tw-shadow-md hover:tw-bg-red-700">Get Started</button> */}
             </div>
           </div>
         </div>
@@ -547,7 +517,10 @@ const Home = () => {
           />
         </div>
         <div>
-          <MovieCarousel Section={"Popular Shows"} trendmovies={popularShow[0]} />
+          <MovieCarousel
+            Section={"Popular Shows"}
+            trendmovies={popularShow[0]}
+          />
         </div>
         <div>
           <MovieCarousel
@@ -557,7 +530,7 @@ const Home = () => {
         </div>
 
         <div>
-          <Faq/>
+          <Faq />
         </div>
       </div>
     </>

@@ -55,9 +55,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li className="tw-list-none tw-transition-all tw-duration-300">
-                <Link to="/originals" className="tw-no-underline tw-text-gray-400 tw-hover:text-red-500 tw-flex tw-items-center">
+                <Link to="/browse" className="tw-no-underline tw-text-gray-400 tw-hover:text-red-500 tw-flex tw-items-center">
                   <span className="tw-w-1 tw-h-1 tw-bg-red-600 tw-mr-2"></span>
-                  Originals
+                  Browse
                 </Link>
               </li>
             </ul>

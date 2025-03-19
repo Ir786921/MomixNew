@@ -4,19 +4,25 @@ import {  createUserWithEmailAndPassword , signInWithEmailAndPassword , fetchSig
 import {auth} from "../Utils/firebaseConfig";
 import image from "../asset/Netflix.jpg";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser, isLogin } from "./UserSlice";
+import Store from "./store";
+import Loader from "./Loader";
 
 
 
 const Signup = () => {
   const [isclick, setIsclick] = useState(false);
+  const [isSignUp,setIsSignUp] = useState(false)
+  const [isUserLogin,setIsUserLogin] = useState(false)
+
   const [validationText, setValidationText] = useState(" ");
   const email = useRef(null);
   const password = useRef(null);
   const fname = useRef(null);
   const navigate = useNavigate()
   const dispatch = useDispatch();
+  const UserDetails = useSelector(Store => Store.user.item);
 
   function clickHandle() {
     setIsclick(!isclick);
@@ -29,36 +35,41 @@ const Signup = () => {
     }
   }
   async function LoginClicked() {
-    console.log("Login clicked");
+    
   
     // Validate email and password
     const emailValue = email?.current?.value;
     const passwordValue = password?.current?.value;
     const text = validation(emailValue, passwordValue);
     setValidationText(text);
+    setIsUserLogin(true)
   
    // Stop execution if validation fails
   
     try {
-      // Check if the email is registered
-      
-  
-      // If registered, proceed with login
+   
       const userCredential = await signInWithEmailAndPassword(auth, emailValue, passwordValue);
       let user = userCredential.user;
   
-      // Force reload to ensure displayName is available
+   
       await user.reload();
       
       console.log("User logged in:", user);
-      console.log("User display name:", user.displayName); // This should be available now
+      console.log("User display name:", user.displayName); 
   
       // Dispatch to Redux (if needed)
       dispatch(isLogin())
       dispatch(addUser(user));
+
+        
+        
+      
+    
+        navigate("/browse");
+     
   
       // Navigate only after successful login
-      navigate("/browse");
+      
     } catch (error) {
       console.error("Login error:", error.message);
       if (error.code === "auth/wrong-password") {
@@ -71,7 +82,7 @@ const Signup = () => {
   
 
   async function SignupClicked() {
-    console.log("clicked");
+ 
   
     const text = validation(
       email?.current?.value,
@@ -79,6 +90,7 @@ const Signup = () => {
       fname?.current?.value
     );
     setValidationText(text);
+    setIsSignUp(true)
   
     // Stop execution if validation fails
   
@@ -117,6 +129,8 @@ const Signup = () => {
 
 
   return (
+    <>
+    { (isUserLogin && (!UserDetails || UserDetails.length === 0))  && <Loader/> || (isSignUp && (!UserDetails || UserDetails.length === 0))  && <Loader/>}
    <div className=" tw-flex justify-center border border-success tw-h-screen"
    style={{backgroundImage:`url(${image})`}}>
      <div className="tw-m-auto tw-p-4 tw-bg-black tw-opacity-85 tw-rounded-md tw-shadow-md md:tw-w-[30%] tw-w-[70%]">
@@ -182,6 +196,7 @@ const Signup = () => {
     </p>
   </div>
    </div>
+   </>
   );
 };
 
