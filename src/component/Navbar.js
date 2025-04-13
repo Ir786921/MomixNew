@@ -31,13 +31,13 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Check if the clicked element is NOT inside the dropdown or the button
+     
       if (!event.target.closest(".dropdown-container")) {
         setIsOpen(!isOpen);
       }
     };
 
-    // Add event listener when dropdown is open
+   
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
@@ -56,7 +56,7 @@ const Navbar = () => {
           console.log("User logged out successfully");
           dispatch(removeUser());
           dispatch(isLogin());
-          navigate("/"); // Ensure user is redirected after logout
+          navigate("/"); 
         })
         .catch((error) => {
           console.error("Error signing out:", error.message);
@@ -68,7 +68,7 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Nav Bar Section */}
+     
 
       <div
         className={`tw-fixed  tw-top-0 tw-flex tw-justify-between tw-p-3  tw-text-lg tw-gap-6 tw-items-center tw-text-white tw-w-full tw-z-40 ${
@@ -168,7 +168,7 @@ const Navbar = () => {
 
           {isOpen && (
            <div
-           className="tw-absolute tw-right-0 tw-top-20 tw-mt-2 tw-w-68 tw-bg-[#121212] tw-text-white tw-rounded-lg tw-shadow-lg tw-p-2 tw-z-10 tw-border tw-border-gray-800 
+           className="dropdown-container tw-absolute tw-right-0 tw-top-20 tw-mt-2 tw-w-68 tw-bg-[#121212] tw-text-white tw-rounded-lg tw-shadow-lg tw-p-2 tw-z-10 tw-border tw-border-gray-800 
                tw-opacity-1 tw-scale-95 tw-animate-fadeIn tw-transition-all tw-duration-300 tw-ease-in-out tw-origin-top-right"
          >
            <div className="tw-p-2 tw-text-gray-300">Hi, User!</div>

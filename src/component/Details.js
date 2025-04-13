@@ -72,7 +72,7 @@ const Details = () => {
   }
 
   async function getRecommendationPosters(tmdbId) {
-    if (!tmdbId) return null; // Avoid errors if TMDB ID is missing
+    if (!tmdbId) return null;
 
     const response = await fetch(
       `https://www.omdbapi.com/?i=${tmdbId}&apikey=${process.env.OMDB_API_KEY}`
@@ -94,9 +94,9 @@ const Details = () => {
     const details = await getMovieRecommendations(id);
     const fullMovies = await Promise.all(
       details.map(async (movie) => {
-        const imdbId = movie.ids.imdb; // ✅ Get TMDB ID directly from Trakt
+        const imdbId = movie.ids.imdb; 
 
-        // Fetch images if TMDB ID is available
+      
         const images = imdbId ? await getRecommendationPosters(imdbId) : null;
 
         return { ...movie, images };
@@ -107,7 +107,7 @@ const Details = () => {
   }
 
   async function getPopularMoviePosters(tmdbId) {
-    if (!tmdbId) return null; // Avoid errors if TMDB ID is missing
+    if (!tmdbId) return null;
     console.log(tmdbId);
 
     const response = await fetch(
@@ -144,7 +144,7 @@ const Details = () => {
 
   async function getCastWithImages() {
     try {
-      // Step 1: Get Movie Cast from Trakt API
+    
       const traktResponse = await fetch(
         `https://api.trakt.tv/${media}/${id}/people`,
         {
@@ -205,33 +205,33 @@ const Details = () => {
         <>
           {" "}
           <div className="tw-w-full tw-bg-black tw-text-white">
-            {/* Hero Section */}
+   
             <div className="tw-relative tw-h-[580px] tw-max-h-[600px] md:tw-max-h-96 lg:tw-max-h-[600px] lg:tw-h-3/4 tw-w-full tw-overflow-hidden">
               <img
                 src={data?.images?.poster}
                 alt="The Midnight Chronicles"
                 className="tw-w-full tw-h-full tw-float-right tw-object-contain"
               />
-              {/* Gradient overlays */}
+          
               <div className="tw-absolute tw-inset-0 tw-bg-gradient-to-r tw-from-black tw-via-black/70 tw-to-transparent"></div>
               <div className="tw-absolute tw-inset-0 tw-bg-gradient-to-t tw-from-black tw-via-black/50 tw-to-transparent"></div>
 
-              {/* Content positioning */}
+    
               <div className="tw-absolute tw-inset-0 tw-flex tw-flex-col tw-justify-end tw-px-4 tw-pb-16 md:tw-px-12 lg:tw-px-20 lg:tw-pb-24">
                 <div className="tw-max-w-2xl">
-                  {/* Exclusive tag */}
+          
                   <div className="tw-mb-3">
                     <span className="tw-bg-red-600 tw-text-white tw-text-xs tw-font-bold tw-py-1 tw-px-2 tw-rounded">
                       EXCLUSIVE PREMIERE
                     </span>
                   </div>
 
-                  {/* Title */}
+             
                   <h1 className="tw-text-4xl md:tw-text-5xl lg:tw-text-6xl tw-font-bold tw-text-white tw-mb-4">
                     {data?.title}
                   </h1>
 
-                  {/* Metadata row */}
+               
                   <div className="tw-flex tw-items-center tw-text-sm tw-text-gray-400 tw-mb-4 tw-flex-wrap">
                     <span className="tw-mr-3 tw-bg-red-600 tw-text-white tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-medium">
                       97% MATCH
@@ -254,12 +254,12 @@ const Details = () => {
                     </span>
                   </div>
 
-                  {/* Description */}
+               
                   <p className="tw-text-gray-300 tw-text-sm md:tw-text-base tw-mb-6 tw-leading-relaxed tw-max-w-xl">
                     {data?.overview}
                   </p>
 
-                  {/* Action buttons */}
+               
                   <div className="tw-flex tw-flex-wrap tw-gap-3">
                     <button
                       className="tw-flex tw-items-center tw-bg-white hover:tw-bg-gray-200 tw-text-black tw-font-medium tw-px-6 tw-py-2 tw-rounded tw-transition-colors"
@@ -277,14 +277,14 @@ const Details = () => {
               </div>
             </div>
 
-            {/* Trailer Section */}
+          
 
-            {/* Cast Section */}
+         
             <div className="tw-bg-black">
               <StarCastCarousel cast={cast} Section={"Star Cast"} />
             </div>
 
-            {/* Recommendations Section */}
+      
             <div className=" tw-bg-black">
               {
                 <MovieCarousel
@@ -297,7 +297,7 @@ const Details = () => {
           {trailerModalOpen && (
             <div className="tw-fixed tw-inset-0 tw-z-50 tw-flex tw-items-center tw-justify-center tw-bg-black/80 tw-backdrop-blur-sm">
               <div className="tw-relative tw-w-full tw-max-w-4xl tw-mx-4 tw-rounded-lg tw-overflow-hidden tw-shadow-2xl">
-                {/* Close button */}
+              
                 <button
                   onClick={closeTrailerModal}
                   className="tw-absolute tw-top-4 tw-right-4 tw-z-10 tw-bg-black/50 tw-text-white tw-w-8 tw-h-8 tw-rounded-full tw-flex tw-items-center tw-justify-center hover:tw-bg-red-600 tw-transition-colors"
@@ -305,7 +305,7 @@ const Details = () => {
                   <i className="fas fa-times"></i>
                 </button>
 
-                {/* Video player (fits inside the modal) */}
+             
                 <div className="tw-aspect-video tw-w-full tw-bg-black">
                   <iframe
                     className="tw-w-full tw-h-full"
@@ -317,7 +317,7 @@ const Details = () => {
                   ></iframe>
                 </div>
 
-                {/* Trailer title and description */}
+               
                 <div className="tw-bg-black tw-p-4">
                   <h3 className="tw-font-bold tw-text-lg tw-text-white">
                     {data?.title} - Official Trailer

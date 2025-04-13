@@ -42,33 +42,37 @@ const MovieCarousel = ({ trendmovies, Section }) => {
     <div className="tw-max-w-7xl tw-mx-auto tw-py-8 tw-px-4 ">
       <div className="tw-flex tw-justify-between tw-items-center tw-mb-6">
         <h2 className="tw-text-2xl tw-font-bold tw-text-white">{Section}</h2>
-        {Section === "Popular Shows" && (<Link
+        {(Section === "Popular Shows" && (
+          <Link
             to="/shows"
             className="tw-no-underline tw-text-blue-400 hover:tw-text-blue-300 tw-text-sm tw-font-medium tw-flex tw-items-center"
           >
             See More
             <i className="fas fa-chevron-right tw-ml-1"></i>
-          </Link>) ||
-          Section === "Popular Movies" && (<Link
-            to="/movie"
-            className="tw-no-underline tw-text-blue-400 hover:tw-text-blue-300 tw-text-sm tw-font-medium tw-flex tw-items-center"
-          >
-            See More
-            <i className="fas fa-chevron-right tw-ml-1"></i>
-          </Link>) ||
-          Section === "Trending Now 🔥" && (
-          <Link
-            to="/trending"
-            className="tw-no-underline tw-text-blue-400 hover:tw-text-blue-300 tw-text-sm tw-font-medium tw-flex tw-items-center"
-          >
-            See More
-            <i className="fas fa-chevron-right tw-ml-1"></i>
           </Link>
-        )}
+        )) ||
+          (Section === "Popular Movies" && (
+            <Link
+              to="/movie"
+              className="tw-no-underline tw-text-blue-400 hover:tw-text-blue-300 tw-text-sm tw-font-medium tw-flex tw-items-center"
+            >
+              See More
+              <i className="fas fa-chevron-right tw-ml-1"></i>
+            </Link>
+          )) ||
+          (Section === "Trending Now 🔥" && (
+            <Link
+              to="/trending"
+              className="tw-no-underline tw-text-blue-400 hover:tw-text-blue-300 tw-text-sm tw-font-medium tw-flex tw-items-center"
+            >
+              See More
+              <i className="fas fa-chevron-right tw-ml-1"></i>
+            </Link>
+          ))}
       </div>
 
       <div className="tw-relative">
-        {/* Left Arrow */}
+
         <button
           className={`tw-absolute md:tw-left-[-55px] tw-left-0 tw-top-1/2 tw-transform -tw-translate-y-1/2 tw-z-10 tw-bg-black tw-bg-opacity-80 tw-p-3 tw-rounded-full tw-text-white hover:tw-bg-opacity-100 tw-transition-all ${
             scrollPosition <= 0 ? " tw-cursor-not-allowed" : "tw-opacity-100"
@@ -79,20 +83,20 @@ const MovieCarousel = ({ trendmovies, Section }) => {
           <i className="fas fa-chevron-left"></i>
         </button>
 
-        {/* Carousel Container */}
+   
         <div
           ref={carouselRef}
           className="tw-flex tw-overflow-x-hidden tw-scroll-smooth tw-gap-5 tw-py-4 tw-px-12"
           style={{ scrollBehavior: "smooth" }}
         >
-          {(!trendmovies || trendmovies.length === 0)
+          {!trendmovies || trendmovies.length === 0
             ? shimmerArray.map((it) => {
                 return (
                   <div className="tw-cursor-pointer tw-flex-none tw-w-40 tw-rounded-lg tw-overflow-hidden tw-shadow-xl  tw-transform tw-transition-all tw-duration-300 hover:tw-scale-105 hover:tw-shadow-2xl tw-animate-pulse ">
-                    {/* Image Placeholder */}
+                    
                     <div className="tw-w-full tw-h-56 tw-bg-gray-800"></div>
 
-                    {/* Text Content Placeholder */}
+   
                     <div className="tw-p-3">
                       <div className="tw-w-64 tw-h-4 tw-bg-gray-700 tw-rounded-md"></div>
                       <div className="tw-flex tw-items-center tw-mt-2">

@@ -85,12 +85,12 @@ const SearchBar = () => {
       >
         <div className="tw-relative">
           <div className="tw-relative">
-            {/* Search Icon */}
+          
             <div className="tw-absolute tw-inset-y-0 tw-left-0 tw-pl-3 tw-flex tw-items-center tw-pointer-events-none">
               <i className="fa fa-search tw-text-red-500"></i>
             </div>
 
-            {/* Search Input */}
+           
             <input
               type="text"
               value={searchQuery}
@@ -101,7 +101,7 @@ const SearchBar = () => {
                      tw-focus:outline-none tw-focus:ring-2 tw-focus:ring-red-500 tw-transition-all tw-duration-200"
             />
 
-            {/* Clear Button */}
+          
             {searchQuery && (
               <button
                 onClick={clearSearch}
@@ -112,7 +112,7 @@ const SearchBar = () => {
             )}
           </div>
 
-          {/* Suggestions Dropdown */}
+        
           {showSuggestions && (
             <div className="tw-absolute tw-mt-1 tw-w-full tw-bg-black tw-rounded-lg tw-shadow-2xl tw-z-20 tw-border tw-border-red-700 tw-overflow-hidden">
               {searchQuery && filteredSuggestions.length > 0 ? (
@@ -143,7 +143,7 @@ const SearchBar = () => {
           )}
         </div>
       </div>
-      {/* Search Result */}
+  
       {searchQuery && (
         <div className="md:tw-w-[1450px] tw-w-[450px] md:tw-h-[315px] tw-h-48 tw-overflow-y-auto  tw-gap-6  tw-flex tw-flex-row tw-flex-wrap  tw-bg-transparent tw-border tw-border-gray-700 tw-rounded-lg tw-shadow-lg tw-p-4 tw-mx-auto tw-backdrop-blur-lg">
           {data &&
