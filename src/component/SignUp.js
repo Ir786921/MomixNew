@@ -37,14 +37,13 @@ const Signup = () => {
   async function LoginClicked() {
     
   
-    // Validate email and password
+  
     const emailValue = email?.current?.value;
     const passwordValue = password?.current?.value;
     const text = validation(emailValue, passwordValue);
     setValidationText(text);
     setIsUserLogin(true)
-  
-   // Stop execution if validation fails
+
   
     try {
    
@@ -57,7 +56,7 @@ const Signup = () => {
       console.log("User logged in:", user);
       console.log("User display name:", user.displayName); 
   
-      // Dispatch to Redux (if needed)
+
       dispatch(isLogin())
       dispatch(addUser(user));
 
@@ -68,7 +67,7 @@ const Signup = () => {
         navigate("/browse");
      
   
-      // Navigate only after successful login
+      
       
     } catch (error) {
       console.error("Login error:", error.message);
@@ -92,7 +91,7 @@ const Signup = () => {
     setValidationText(text);
     setIsSignUp(true)
   
-    // Stop execution if validation fails
+
   
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -105,16 +104,16 @@ const Signup = () => {
       console.log(user);
       
   
-      // Update user profile with displayName
+    
       await updateProfile(user, {
         displayName: fname?.current?.value,
       });
   
-      // Dispatch actions after profile update
+   
       dispatch(isLogin());
       dispatch(addUser(user));
   
-      // Navigate after state update
+   
       navigate("/browse");
     } catch (error) {
       if (error.code === "auth/email-already-in-use" || error.message.includes("EMAIL_EXISTS")) {
